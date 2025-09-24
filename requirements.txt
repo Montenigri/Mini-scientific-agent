@@ -1,0 +1,23 @@
+#Dipendenze per langchain
+langchain==0.3.27
+langgraph==0.6.7
+langchain-tavily==0.2.11
+langgraph-checkpoint-sqlite==2.0.11
+langchain-text-splitters==0.3.9
+langchain-chroma==0.2.6
+langchain-community==0.3.29
+
+chromadb==1.1.0
+
+#parser pdf
+pypdf==6.1.0
+
+
+#Dipendenze per Ollama
+langchain-ollama==0.3.8
+
+#Dipendenze per interfaccia grafica
+
+
+#Altre dipendenze
+python-dotenv==1.1.1
