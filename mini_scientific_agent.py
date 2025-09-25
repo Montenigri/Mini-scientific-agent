@@ -36,16 +36,16 @@ def create_vector_store(folder_path):
         )
         docs = loader.load()
         all_splits = text_splitter.split_documents(docs)
-        documents.append(all_splits)
+        documents.extend(all_splits)
     
 
     vector_store = Chroma(
         collection_name="knowlage_base",
         embedding_function=embedding,
-        persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+        persist_directory=os.getenv("chroma-db-path"),  # Where to save data locally, remove if not necessary
     )
-    for doc in documents:
-        vector_store.add_documents(doc)
+    if vector_store._collection.count() == 0:
+        vector_store.add_documents(documents)
 
 def get_retriver():
     if not os.path.exists("chroma_langchain_db"):
@@ -53,14 +53,13 @@ def get_retriver():
     vector_store = Chroma(
         collection_name="knowlage_base",
         embedding_function=embedding,
-        persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+        persist_directory=os.getenv("chroma-db-path"),,  # Where to save data locally, remove if not necessary
     )
-    return vector_store.as_retriever(search_kwargs={"k": 3})
+    return vector_store.as_retriever(search_kwargs={"k": 5})
 
 
 ##Cricamento modello
 model = init_chat_model( model=os.getenv("ollama-model-name"), model_provider="ollama", timeout=30)
-embedding = OllamaEmbeddings(model=os.getenv("ollama-embedding-model-name"))
 
 ##Istaziamento di strumenti
 search_engine = TavilySearch(max_results=2)
@@ -70,8 +69,8 @@ if not os.path.exists("./chroma_langchain_db"):
     print("Vector store creato")
 retriver = get_retriver()
 retrive_tool = create_retriever_tool(retriver,
-    "Retrive information from the knowledge base",
-    "Search and return information about scientific topics",
+    "RAG tool to Retrive information from the knowledge base",
+    "RAG tool to Search and return information about any topic, use it to search in a complete knowledge base for any topic, use this tool when the user asks for a specific arguments, if you dont find anything use the search tool",
 )
 tools = [retrive_tool,search_engine]
 
@@ -99,7 +98,7 @@ def get_streaming_answer(query: str, config: dict):
         yield chunk["messages"][-1].pretty_print()
 
 def get_all_ollama_env() -> list:
-    return [key for key in os.environ.keys() if "ollama" in key.lower()]
+    return [os.getenv(key) for key in os.environ.keys() if "ollama" in key.lower()]
 
 def check_if_model_exists(model_name: str) -> bool:
     """
@@ -148,7 +147,7 @@ def download_model(model_name: str) -> None:
 
 def main():
     ollama_models = get_all_ollama_env()
-    print("Ollama-related environment variables:")
+    print(f"Ollama-related environment variables:\n{ollama_models}\n")
     for model in ollama_models:
         if not check_if_model_exists(model):
             print(f"Model {model} not found. Downloading...")
@@ -157,7 +156,7 @@ def main():
     config = {"configurable": {"thread_id": "abc1234"}}
 
     input_message = {"messages": 
-                     [{"role": "user", "content": "What is a Generative Adversial Network?"},
+                     [{"role": "user", "content": "What did Gustav Muller-franzes wrote about?"},
                       ]}
 
     print("\nStreaming answer:")
