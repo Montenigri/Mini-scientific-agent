@@ -71,6 +71,7 @@ retriver = get_retriver()
 retrive_tool = create_retriever_tool(retriver,
     "RAG tool to Retrive information from the knowledge base",
     "RAG tool to Search and return information about any topic, use it to search in a complete knowledge base for any topic, use this tool when the user asks for a specific arguments, if you dont find anything use the search tool",
+    response_format = "content_and_artifact"
 )
 tools = [retrive_tool,search_engine]
 
@@ -156,7 +157,8 @@ def main():
     config = {"configurable": {"thread_id": "abc1234"}}
 
     input_message = {"messages": 
-                     [{"role": "user", "content": "What did Gustav Muller-franzes wrote about?"},
+                     [{"role": "system", "content": "Use all the tool you are provided with starting from RAG and fallback on web search, provide the user with an answer and reference"},
+                      {"role": "user", "content": "What did Gustav Muller-franzes wrote about?"},
                       ]}
 
     print("\nStreaming answer:")
