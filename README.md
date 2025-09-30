@@ -40,10 +40,8 @@ L’obiettivo di questo progetto è:
 * [x] Implementazione del RAG retriever come tool
 * [x] Integrazione di un motore di ricerca (Tavily) come fallback
 * [x] Creazione dell’agente ReAct con LangGraph
-* [ ] Creare un’interfaccia web minimale
-* [ ] Internazionalizzazione completa (IT/EN)
-* [ ] Containerizzazione con Docker
-* [ ] Ottimizzazione prestazioni e logging avanzato
+* [x] Creare un’interfaccia web minimale
+* [x] Containerizzazione con Docker
 
 ---
 
@@ -61,17 +59,13 @@ L’obiettivo di questo progetto è:
 1. Clona la repo
 2. Copia il file `.env.example`, rinominarlo in `.env` ed inserire i parametri necessari (es. modello Ollama, path DB, API key)
 3. Inserisci i PDF in `./pdfs`
-4. Avvia lo script:
+4. Costruisci il container e avvialo:
 
 ```bash
-python main.py
+docker compose up
 ```
 
----
-
-## 🔜 Prossimi sviluppi
-
-* Creare una **UI web minimale** (Flask/FastAPI + HTMX/VanillaJS).
-* Packaging in Docker per facile distribuzione.
+5. visita localhost:5000 per accedere alla chat
 
 ---
+

@@ -1,0 +1,21 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_compose
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+    
+
+  mini-scientific-agent:
+    build: .
+    container_name: mini-scientific-agent
+    ports:
+      - "5000:5000"
+    environment:
+      - OLLAMA_API_URL=http://ollama:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    command: python flask_server.py
+    
